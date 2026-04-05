@@ -1,0 +1,18 @@
+package com.feedback.repository;
+
+import com.feedback.model.Course;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface CourseRepository extends JpaRepository<Course, Long> {
+
+    List<Course> findByIsActiveTrue();
+
+    Optional<Course> findByCourseName(String courseName);
+
+    List<Course> findByFormId(Long formId);
+}

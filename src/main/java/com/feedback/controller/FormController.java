@@ -46,23 +46,9 @@ public class FormController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('FACULTY')")
-    public ResponseEntity<List<FormResponseDTO>> getAllForms(Authentication authentication) {
+    public ResponseEntity<List<FormResponseDTO>> getAllForms() {
         try {
-            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-
-            List<FormResponseDTO> forms;
-            if (userPrincipal.getRole().equals(User.Role.ADMIN)) {
-                forms = formService.getAllActiveForms();
-            } else {
-                // Faculty can only see forms they created
-                User user = new User();
-                user.setId(userPrincipal.getId());
-                user.setUsername(userPrincipal.getUsername());
-                user.setRole(userPrincipal.getRole());
-                forms = formService.getFormsByUser(user);
-            }
-
+            List<FormResponseDTO> forms = formService.getAllActiveForms();
             return ResponseEntity.ok(forms);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

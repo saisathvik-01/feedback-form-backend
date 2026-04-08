@@ -46,9 +46,24 @@ public class FormController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FormResponseDTO>> getAllForms() {
+    @PreAuthorize("hasRole('ADMIN') or hasRole('FACULTY') or hasRole('STUDENT')")
+    public ResponseEntity<List<FormResponseDTO>> getAllForms(Authentication authentication) {
         try {
-            List<FormResponseDTO> forms = formService.getAllActiveForms();
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+            List<FormResponseDTO> forms;
+            if (userPrincipal.getRole() == User.Role.ADMIN) {
+                forms = formService.getAllActiveForms();
+            } else if (userPrincipal.getRole() == User.Role.FACULTY) {
+                User user = new User();
+                user.setId(userPrincipal.getId());
+                user.setUsername(userPrincipal.getUsername());
+                user.setRole(userPrincipal.getRole());
+                forms = formService.getFormsByUser(user);
+            } else {
+                forms = formService.getAllActiveForms();
+            }
+
             return ResponseEntity.ok(forms);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -56,14 +71,14 @@ public class FormController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('FACULTY')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('FACULTY') or hasRole('STUDENT')")
     public ResponseEntity<?> getFormById(@PathVariable Long id, Authentication authentication) {
         try {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
             FormResponseDTO form = formService.getFormById(id);
 
             // Check if faculty user owns this form
-            if (userPrincipal.getRole().equals(User.Role.FACULTY) &&
+            if (userPrincipal.getRole() == User.Role.FACULTY &&
                 !form.getCreatedBy().equals(userPrincipal.getUsername())) {
                 return ResponseEntity.status(403)
                         .body(Map.of("message", "You don't have permission to view this form"));

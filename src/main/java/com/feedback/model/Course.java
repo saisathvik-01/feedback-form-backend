@@ -55,6 +55,12 @@ public class Course {
         this.form = form;
     }
 
+    public Course(String courseName, String facultyName) {
+        this.courseName = courseName;
+        this.facultyName = facultyName;
+        this.isActive = true;
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;

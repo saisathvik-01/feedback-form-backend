@@ -14,6 +14,10 @@ public class FormDTO {
 
     private String description;
 
+    private String courseId;
+
+    private String facultyName;
+
     @NotNull(message = "Active status is required")
     private Boolean isActive = true;
 
@@ -27,6 +31,15 @@ public class FormDTO {
     public FormDTO(String title, String description, Boolean isActive, List<QuestionDTO> questions) {
         this.title = title;
         this.description = description;
+        this.isActive = isActive;
+        this.questions = questions;
+    }
+
+    public FormDTO(String title, String description, String courseId, String facultyName, Boolean isActive, List<QuestionDTO> questions) {
+        this.title = title;
+        this.description = description;
+        this.courseId = courseId;
+        this.facultyName = facultyName;
         this.isActive = isActive;
         this.questions = questions;
     }
@@ -46,6 +59,22 @@ public class FormDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
     }
 
     public Boolean getIsActive() {

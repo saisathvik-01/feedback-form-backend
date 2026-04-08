@@ -36,6 +36,10 @@ public class Form {
     @Column(nullable = false)
     private Boolean isActive = true;
 
+    private String courseId;
+
+    private String facultyName;
+
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
@@ -116,6 +120,22 @@ public class Form {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
     }
 
     public LocalDateTime getCreatedAt() {

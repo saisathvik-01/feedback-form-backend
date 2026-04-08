@@ -61,7 +61,8 @@ public class FormController {
                 user.setRole(userPrincipal.getRole());
                 forms = formService.getFormsByUser(user);
             } else {
-                forms = formService.getAllActiveForms();
+                // Students can only see forms created by admins
+                forms = formService.getActiveFormsByAdminCreators();
             }
 
             return ResponseEntity.ok(forms);
@@ -82,6 +83,25 @@ public class FormController {
                 !form.getCreatedBy().equals(userPrincipal.getUsername())) {
                 return ResponseEntity.status(403)
                         .body(Map.of("message", "You don't have permission to view this form"));
+            }
+
+            return ResponseEntity.ok(form);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Error retrieving form: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/course/{courseId}")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> getFormByCourse(@PathVariable Long courseId, Authentication authentication) {
+        try {
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            FormResponseDTO form = formService.getFormByCourseId(courseId);
+            
+            if (form == null) {
+                return ResponseEntity.status(404)
+                        .body(Map.of("message", "No form assigned to this course"));
             }
 
             return ResponseEntity.ok(form);

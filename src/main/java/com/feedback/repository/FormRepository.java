@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FormRepository extends JpaRepository<Form, Long> {
@@ -23,4 +24,10 @@ public interface FormRepository extends JpaRepository<Form, Long> {
 
     @Query("SELECT f FROM Form f WHERE f.createdBy = :user AND f.isActive = true ORDER BY f.createdAt DESC")
     List<Form> findActiveFormsByUserOrderByCreatedAtDesc(@Param("user") User user);
+
+    @Query("SELECT f FROM Form f WHERE f.createdBy.role = 'ADMIN' AND f.isActive = true ORDER BY f.createdAt DESC")
+    List<Form> findActiveFormsByAdminCreators();
+
+    @Query("SELECT f FROM Form f WHERE f.courseId = :courseId AND f.isActive = true")
+    Optional<Form> findByCourseIdAndIsActiveTrue(@Param("courseId") Long courseId);
 }

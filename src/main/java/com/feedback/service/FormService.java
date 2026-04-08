@@ -74,8 +74,25 @@ public class FormService {
         return convertToResponseDTO(form);
     }
 
+    public FormResponseDTO getFormByCourseId(Long courseId) {
+        Form form = formRepository.findByCourseIdAndIsActiveTrue(courseId)
+                .orElse(null);
+        
+        if (form == null) {
+            return null;
+        }
+
+        return convertToResponseDTO(form);
+    }
+
     public List<FormResponseDTO> getFormsByUser(User user) {
         return formRepository.findActiveFormsByUserOrderByCreatedAtDesc(user).stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<FormResponseDTO> getActiveFormsByAdminCreators() {
+        return formRepository.findActiveFormsByAdminCreators().stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }

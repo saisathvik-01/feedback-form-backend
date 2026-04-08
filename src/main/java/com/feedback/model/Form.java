@@ -22,6 +22,8 @@ public class Form {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    private String courseCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
@@ -82,6 +84,14 @@ public class Form {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 
     public User getCreatedBy() {

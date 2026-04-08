@@ -53,6 +53,30 @@ public class CourseService {
     }
 
     @Transactional
+    public CourseDTO createCourse(CourseDTO courseDTO) {
+        if (courseRepository.findByCourseCode(courseDTO.getCourseCode()).isPresent()) {
+            throw new RuntimeException("Course with code " + courseDTO.getCourseCode() + " already exists");
+        }
+        
+        Course course = new Course();
+        course.setCourseCode(courseDTO.getCourseCode());
+        course.setCourseName(courseDTO.getCourseName());
+        course.setFacultyName(courseDTO.getFacultyName());
+        course.setIsActive(true);
+        
+        Course savedCourse = courseRepository.save(course);
+        return CourseDTO.fromCourse(savedCourse);
+    }
+
+    @Transactional
+    public void deleteCourse(Long id) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found with id: " + id));
+        course.setIsActive(false);
+        courseRepository.save(course);
+    }
+
+    @Transactional
     public void createOrUpdateCourse(String courseName, Long formId) {
         Course course = courseRepository.findByCourseName(courseName)
                 .orElse(new Course(courseName, null));
@@ -74,18 +98,18 @@ public class CourseService {
 
     @Transactional
     public void initializeDefaultCourses() {
-        String[] courseNames = {
-            "FullStack Application Development",
-            "Mathematical Optimization",
-            "Design and Analysis of Algorithms",
-            "Operating Systems",
-            "UX Design",
-            "Cloud Infrastructure"
+        String[][] courses = {
+            {"FSAD", "FullStack Application Development", "Faculty Name"},
+            {"MATH", "Mathematical Optimization", "Faculty Name"},
+            {"DAA", "Design and Analysis of Algorithms", "Faculty Name"},
+            {"OS", "Operating Systems", "Faculty Name"},
+            {"UX", "UX Design", "Faculty Name"},
+            {"CLOUD", "Cloud Infrastructure", "Faculty Name"}
         };
 
-        for (String courseName : courseNames) {
-            if (courseRepository.findByCourseName(courseName).isEmpty()) {
-                Course course = new Course(courseName, null);
+        for (String[] courseData : courses) {
+            if (courseRepository.findByCourseCode(courseData[0]).isEmpty()) {
+                Course course = new Course(courseData[0], courseData[1], courseData[2], null);
                 courseRepository.save(course);
             }
         }

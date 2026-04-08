@@ -5,16 +5,20 @@ import com.feedback.model.Course;
 public class CourseDTO {
 
     private Long id;
+    private String courseCode;
     private String courseName;
+    private String facultyName;
     private Long formId;
     private Boolean isActive;
 
     // Constructors
     public CourseDTO() {}
 
-    public CourseDTO(Long id, String courseName, Long formId, Boolean isActive) {
+    public CourseDTO(Long id, String courseCode, String courseName, String facultyName, Long formId, Boolean isActive) {
         this.id = id;
+        this.courseCode = courseCode;
         this.courseName = courseName;
+        this.facultyName = facultyName;
         this.formId = formId;
         this.isActive = isActive;
     }
@@ -22,7 +26,9 @@ public class CourseDTO {
     public static CourseDTO fromCourse(Course course) {
         return new CourseDTO(
             course.getId(),
+            course.getCourseCode(),
             course.getCourseName(),
+            course.getFacultyName(),
             course.getForm() != null ? course.getForm().getId() : null,
             course.getIsActive()
         );
@@ -43,6 +49,22 @@ public class CourseDTO {
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
     }
 
     public Long getFormId() {

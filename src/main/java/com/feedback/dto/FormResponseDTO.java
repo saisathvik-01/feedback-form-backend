@@ -10,6 +10,8 @@ public class FormResponseDTO {
     private String title;
     private String description;
     private String createdBy;
+    private String courseId;
+    private String facultyName;
     private Boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -19,12 +21,14 @@ public class FormResponseDTO {
     public FormResponseDTO() {}
 
     public FormResponseDTO(Long id, String title, String description, String createdBy,
-                          Boolean isActive, LocalDateTime createdAt, LocalDateTime updatedAt,
-                          List<QuestionResponseDTO> questions) {
+                          String courseId, String facultyName, Boolean isActive, LocalDateTime createdAt,
+                          LocalDateTime updatedAt, List<QuestionResponseDTO> questions) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.createdBy = createdBy;
+        this.courseId = courseId;
+        this.facultyName = facultyName;
         this.isActive = isActive;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -62,6 +66,22 @@ public class FormResponseDTO {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
     }
 
     public Boolean getIsActive() {

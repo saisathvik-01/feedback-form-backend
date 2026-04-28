@@ -85,4 +85,31 @@ public class CourseController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> createCourse(@RequestBody CourseDTO courseDTO) {
+        try {
+            CourseDTO createdCourse = courseService.createCourse(courseDTO);
+            return ResponseEntity.ok(Map.of(
+                "message", "Course created successfully",
+                "course", createdCourse
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Error creating course: " + e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteCourse(@PathVariable Long id) {
+        try {
+            courseService.deleteCourse(id);
+            return ResponseEntity.ok(Map.of("message", "Course deleted successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Error deleting course: " + e.getMessage()));
+        }
+    }
 }

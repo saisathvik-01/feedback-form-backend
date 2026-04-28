@@ -12,9 +12,15 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Course name is required")
+    @NotBlank(message = "Course code is required")
     @Column(nullable = false, unique = true)
+    private String courseCode;
+
+    @NotBlank(message = "Course name is required")
+    @Column(nullable = false)
     private String courseName;
+
+    private String facultyName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "form_id")
@@ -42,9 +48,17 @@ public class Course {
     // Constructors
     public Course() {}
 
-    public Course(String courseName, Form form) {
+    public Course(String courseCode, String courseName, String facultyName, Form form) {
+        this.courseCode = courseCode;
         this.courseName = courseName;
+        this.facultyName = facultyName;
         this.form = form;
+    }
+
+    public Course(String courseName, String facultyName) {
+        this.courseName = courseName;
+        this.facultyName = facultyName;
+        this.isActive = true;
     }
 
     // Getters and Setters
@@ -62,6 +76,22 @@ public class Course {
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
     }
 
     public Form getForm() {

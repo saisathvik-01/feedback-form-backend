@@ -22,6 +22,8 @@ public class Form {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    private String courseCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
@@ -33,6 +35,10 @@ public class Form {
 
     @Column(nullable = false)
     private Boolean isActive = true;
+
+    private String courseId;
+
+    private String facultyName;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -84,6 +90,14 @@ public class Form {
         this.description = description;
     }
 
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
     public User getCreatedBy() {
         return createdBy;
     }
@@ -106,6 +120,22 @@ public class Form {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
     }
 
     public LocalDateTime getCreatedAt() {

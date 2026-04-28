@@ -46,21 +46,23 @@ public class FormController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('FACULTY')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('FACULTY') or hasRole('STUDENT')")
     public ResponseEntity<List<FormResponseDTO>> getAllForms(Authentication authentication) {
         try {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
             List<FormResponseDTO> forms;
-            if (userPrincipal.getRole().equals(User.Role.ADMIN)) {
+            if (userPrincipal.getRole() == User.Role.ADMIN) {
                 forms = formService.getAllActiveForms();
-            } else {
-                // Faculty can only see forms they created
+            } else if (userPrincipal.getRole() == User.Role.FACULTY) {
                 User user = new User();
                 user.setId(userPrincipal.getId());
                 user.setUsername(userPrincipal.getUsername());
                 user.setRole(userPrincipal.getRole());
                 forms = formService.getFormsByUser(user);
+            } else {
+                // Students can only see forms created by admins
+                forms = formService.getActiveFormsByAdminCreators();
             }
 
             return ResponseEntity.ok(forms);
@@ -70,17 +72,36 @@ public class FormController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('FACULTY')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('FACULTY') or hasRole('STUDENT')")
     public ResponseEntity<?> getFormById(@PathVariable Long id, Authentication authentication) {
         try {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
             FormResponseDTO form = formService.getFormById(id);
 
             // Check if faculty user owns this form
-            if (userPrincipal.getRole().equals(User.Role.FACULTY) &&
+            if (userPrincipal.getRole() == User.Role.FACULTY &&
                 !form.getCreatedBy().equals(userPrincipal.getUsername())) {
                 return ResponseEntity.status(403)
                         .body(Map.of("message", "You don't have permission to view this form"));
+            }
+
+            return ResponseEntity.ok(form);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Error retrieving form: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/course/{courseId}")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> getFormByCourse(@PathVariable Long courseId, Authentication authentication) {
+        try {
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            FormResponseDTO form = formService.getFormByCourseId(courseId);
+            
+            if (form == null) {
+                return ResponseEntity.status(404)
+                        .body(Map.of("message", "No form assigned to this course"));
             }
 
             return ResponseEntity.ok(form);

@@ -30,6 +30,8 @@ public class FormService {
         Form form = new Form();
         form.setTitle(formDTO.getTitle());
         form.setDescription(formDTO.getDescription());
+        form.setCourseId(formDTO.getCourseId());
+        form.setFacultyName(formDTO.getFacultyName());
         form.setIsActive(formDTO.getIsActive());
         form.setCreatedBy(createdBy);
 
@@ -72,8 +74,25 @@ public class FormService {
         return convertToResponseDTO(form);
     }
 
+    public FormResponseDTO getFormByCourseId(Long courseId) {
+        Form form = formRepository.findByCourseIdAndIsActiveTrue(courseId)
+                .orElse(null);
+        
+        if (form == null) {
+            return null;
+        }
+
+        return convertToResponseDTO(form);
+    }
+
     public List<FormResponseDTO> getFormsByUser(User user) {
         return formRepository.findActiveFormsByUserOrderByCreatedAtDesc(user).stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<FormResponseDTO> getActiveFormsByAdminCreators() {
+        return formRepository.findActiveFormsByAdminCreators().stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -85,7 +104,7 @@ public class FormService {
 
         // Check if user is the creator or admin
         if (!form.getCreatedBy().getId().equals(user.getId()) &&
-            !user.getRole().equals(User.Role.ADMIN)) {
+            user.getRole() != User.Role.ADMIN) {
             throw new RuntimeException("You don't have permission to update this form");
         }
 
@@ -123,7 +142,7 @@ public class FormService {
 
         // Check if user is the creator or admin
         if (!form.getCreatedBy().getId().equals(user.getId()) &&
-            !user.getRole().equals(User.Role.ADMIN)) {
+            user.getRole() != User.Role.ADMIN) {
             throw new RuntimeException("You don't have permission to delete this form");
         }
 
@@ -147,6 +166,8 @@ public class FormService {
                 form.getTitle(),
                 form.getDescription(),
                 form.getCreatedBy().getUsername(),
+                form.getCourseId(),
+                form.getFacultyName(),
                 form.getIsActive(),
                 form.getCreatedAt(),
                 form.getUpdatedAt(),

@@ -30,4 +30,6 @@ public interface FormRepository extends JpaRepository<Form, Long> {
 
     @Query("SELECT f FROM Form f WHERE f.courseId = :courseId AND f.isActive = true")
     Optional<Form> findByCourseIdAndIsActiveTrue(@Param("courseId") Long courseId);
+
+    Optional<Form> findByCourseCode(String courseCode);
 }

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+@CrossOrigin(origins = {"http://localhost:3000", "https://feedback-form-frontend.vercel.app"}, maxAge = 3600)
 @RestController
 @RequestMapping("/api/feedback")
 public class FeedbackController {

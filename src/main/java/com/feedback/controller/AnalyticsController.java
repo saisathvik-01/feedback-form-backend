@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+@CrossOrigin(origins = {"http://localhost:3000", "https://feedback-form-frontend.vercel.app"}, maxAge = 3600)
 @RestController
 @RequestMapping("/api/analytics")
 public class AnalyticsController {
